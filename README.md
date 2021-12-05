@@ -70,7 +70,7 @@ The scores are listed below with their ranks :
 ```bash
 cd $(mktemp -d)
 git clone https://github.com/OzanCansel/tableprinter.git
-cd fsconfig
+cd tableprinter
 mkdir build && cd build
 cmake ..
 sudo cmake --build . --target install -- -j$(nproc)
@@ -78,7 +78,7 @@ sudo cmake --build . --target install -- -j$(nproc)
 
 
 #### Way 1.1.
-- Include __tableprinter__ to your cmake project with `find_package( fsconfig )`
+- Include __tableprinter__ to your cmake project with `find_package( tableprinter )`
 ``` cmake
 cmake_minimum_required( VERSION 3.10 )
 project( my_project )
