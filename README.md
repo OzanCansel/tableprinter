@@ -11,58 +11,6 @@ C++17 compliant compiler is needed to make it worked.
 
 Tested only on Linux.
 
-## How to use ?
-### Way 1. Install to the system
-- Install __tableprinter__ as system-wide.
-```bash
-cd $(mktemp -d)
-git clone https://github.com/OzanCansel/tableprinter.git
-cd fsconfig
-mkdir build && cd build
-cmake ..
-sudo cmake --build . --target install -- -j$(nproc)
-```
-
-
-#### Way 1.1.
-- Include __tableprinter__ to your cmake project with `find_package( fsconfig )`
-``` cmake
-cmake_minimum_required( VERSION 3.10 )
-project( my_project )
-
-# Allows you to use tableprinter
-find_package( tableprinter REQUIRED )
-
-add_executable( my_binary main.cpp )
-
-target_link_libraries( my_binary PRIVATE tableprinter::tableprinter )
-```
-
-#### Way 1.2.
-- It is not obliged to be included by a cmake project. tableprinter is header only so it will be visible after it is installed to the system. So just include it and make sure that you enabled C++17 standard.
-
-### Way 2. Add as a subdirectory
-- Add as an subdirectory to your existing cmake project.
-
-```bash
-cd already_existing_project
-git clone https://github.com/OzanCansel/tableprinter.git
-```
-``` cmake
-cmake_minimum_required( VERSION 3.10 )
-project( already_existing_project )
-
-# Allows you to use tableprinter
-add_subdirectory( tableprinter EXCLUDE_FROM_ALL )
-
-add_executable( my_binary main.cpp )
-
-target_link_libraries( my_binary PRIVATE tableprinter::tableprinter )
-```
-
-#### Way 3.
-Just download `tableprinter.hpp` and include it.
-
 ## Example
 
 ``` C++
@@ -115,6 +63,58 @@ The scores are listed below with their ranks :
    4    Robert  Schwartz     1  98.34
    5    Robert     Brown     4  84.34
 ```
+
+## How to use ?
+### Way 1. Install to the system
+- Install __tableprinter__ as system-wide.
+```bash
+cd $(mktemp -d)
+git clone https://github.com/OzanCansel/tableprinter.git
+cd fsconfig
+mkdir build && cd build
+cmake ..
+sudo cmake --build . --target install -- -j$(nproc)
+```
+
+
+#### Way 1.1.
+- Include __tableprinter__ to your cmake project with `find_package( fsconfig )`
+``` cmake
+cmake_minimum_required( VERSION 3.10 )
+project( my_project )
+
+# Allows you to use tableprinter
+find_package( tableprinter REQUIRED )
+
+add_executable( my_binary main.cpp )
+
+target_link_libraries( my_binary PRIVATE tableprinter::tableprinter )
+```
+
+#### Way 1.2.
+- It is not obliged to be included by a cmake project. tableprinter is header only so it will be visible after it is installed to the system. So just include it and make sure that you enabled C++17 standard.
+
+### Way 2. Add as a subdirectory
+- Add as an subdirectory to your existing cmake project.
+
+```bash
+cd already_existing_project
+git clone https://github.com/OzanCansel/tableprinter.git
+```
+``` cmake
+cmake_minimum_required( VERSION 3.10 )
+project( already_existing_project )
+
+# Allows you to use tableprinter
+add_subdirectory( tableprinter EXCLUDE_FROM_ALL )
+
+add_executable( my_binary main.cpp )
+
+target_link_libraries( my_binary PRIVATE tableprinter::tableprinter )
+```
+
+#### Way 3.
+Just download `tableprinter.hpp` and include it.
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
