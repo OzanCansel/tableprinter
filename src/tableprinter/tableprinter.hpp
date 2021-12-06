@@ -118,13 +118,13 @@ struct invocable_with_option :
 template<typename F>
 static constexpr bool invocable_with_option_v = invocable_with_option<F>::value;
 
-template<typename T, typename = std::void_t<>>
+template<typename T, typename = ::std::void_t<>>
 struct has_value_field :
        ::std::false_type
 {};
 
 template<typename T>
-struct has_value_field<T, std::void_t<decltype( std::declval<T>().value )>> :
+struct has_value_field<T, ::std::void_t<decltype( ::std::declval<T>().value )>> :
        ::std::true_type
 {};
 
