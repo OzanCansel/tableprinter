@@ -136,7 +136,7 @@ inline void run( F&& val , const option& opt )
 {
     static_assert(
         detail::invocable_with_option_v<F> ,
-        "F must be invocable with ran = false; an option."
+        "F must be invocable with an option."
     );
 
     ::std::visit(
