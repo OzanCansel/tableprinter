@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="gif/showcase-1.gif"/> 
+</p>
+
 # tableprinter
 Allows a programmer to print table-like outputs over `std::ostream`.
 
