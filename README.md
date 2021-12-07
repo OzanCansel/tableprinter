@@ -44,7 +44,7 @@ int main()
      .print( 3 , "Anna"   , "Smith"    , 3 , 87.13 )
      .print( 4 , "Robert" , "Schwartz" , 1 , 98.34 )
      .print( 5 , "Robert" , "Brown"    , 4 , 84.34 )
-     .print( std::make_tuple( 6 , "David" , "Timothy" , 5 , 71.34 ) );
+     .print( std::make_tuple( 6 , "David" , "Timothy" , 6 , 71.34 ) );
 
     /*
        # Run the command if you want to see maximum score
@@ -63,7 +63,7 @@ The scores are listed below with their ranks :
    3      Anna     Smith     3  87.13
    4    Robert  Schwartz     1  98.34
    5    Robert     Brown     4  84.34
-   6     David   Timothy     5  71.34
+   6     David   Timothy     6  71.34
 ```
 
 ## How to use ?
