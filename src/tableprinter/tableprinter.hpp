@@ -6,6 +6,7 @@
 #include <functional>
 #include <iomanip>
 #include <ostream>
+#include <tuple>
 
 namespace tableprinter
 {
@@ -244,6 +245,10 @@ public:
             }
     {   }
 
+
+    template<typename... Ts>
+    inline printer& print( const ::std::tuple<Ts...>& values );
+
     template<typename... Ts>
     inline printer& print( const Ts&... );
     inline printer& echo( ::std::string_view );
@@ -256,6 +261,9 @@ private:
 
     template<::std::size_t Idx , typename H , typename... T>
     inline void print_column( ::std::ostream& , const H& , const T&... );
+
+    template<typename... Ts , ::std::size_t... Idx>
+    inline void print_tuple( const ::std::tuple<Ts...>& , ::std::index_sequence<Idx...> );
 
     template<typename T>
     inline void throw_if_duplicate_opt( const column& , ::std::string_view error ) const;
@@ -290,6 +298,23 @@ tableprinter::printer& tableprinter::printer::print( const Ts&... params )
 
         stream << "\n";
     }
+
+    return *this;
+}
+
+template<typename... Ts>
+tableprinter::printer& tableprinter::printer::print( const ::std::tuple<Ts...>& values )
+{
+    if ( auto count = sizeof...( Ts ) != ::std::size( m_columns ) )
+        throw ::std::invalid_argument {
+            "There are " +
+            ::std::to_string( ::std::size( m_columns ) ) +
+            " columns but given " +
+            ::std::to_string( count ) +
+            " arguments."
+        };
+
+    print_tuple( values , ::std::make_index_sequence<sizeof...( Ts )>() );
 
     return *this;
 }
@@ -427,6 +452,12 @@ void tableprinter::printer::print_column( ::std::ostream& os , const H& val , co
 
     if constexpr( sizeof...( T ) != 0 )
         print_column<Idx + 1 , T...>( os , rest... );
+}
+
+template<typename... Ts , ::std::size_t... Idx>
+void tableprinter::printer::print_tuple( const ::std::tuple<Ts...>& values , ::std::index_sequence<Idx...> )
+{
+    print( ::std::get<Idx>( values )... );
 }
 
 template<typename T>

@@ -3,6 +3,28 @@
 #include <sstream>
 #include <tableprinter/tableprinter.hpp>
 
+TEST_CASE( "Print tuple elements" , "[print]" )
+{
+    using namespace tableprinter;
+
+    std::stringstream ss;
+    ss << std::setprecision( 2 );
+
+    printer p
+    {
+        {
+            { name { "col-1" } , default_precision {} } ,
+            { name { "col-2" } , default_precision {} } ,
+            { name { "col-3" } , default_precision {} }
+        } ,
+        ss
+    };
+
+    p.print( std::make_tuple( 0.123456 , 0.123456 , 0.123456 ) );
+
+    REQUIRE( ss.str() == "0.1234560.1234560.123456\n" );
+}
+
 TEST_CASE( "Take default_precision option into account while printing" , "[print]" )
 {
     using namespace tableprinter;
@@ -137,6 +159,24 @@ TEST_CASE( "Take precision option into account while printing" , "[print]" )
     p.print( 5.3434532341 );
 
     REQUIRE( ss.str() == "5.3434532341\n" );
+}
+
+TEST_CASE( "If there are less elements in tuple than columns, should throw exception" , "[print]" )
+{
+    using namespace tableprinter;
+
+    std::stringstream ss;
+
+    printer p
+    {
+        {
+            { name { "col-1" } } ,
+            { name { "col-2" } }
+        } ,
+        ss
+    };
+
+    REQUIRE_THROWS_AS( p.print( std::make_tuple( 1 ) ) , std::logic_error );
 }
 
 TEST_CASE( "If there are less arguments than columns, should throw exception" , "[print]" )
