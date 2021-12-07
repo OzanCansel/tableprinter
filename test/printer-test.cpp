@@ -20,9 +20,9 @@ TEST_CASE( "Print tuple elements" , "[print]" )
         ss
     };
 
-    p.print( std::make_tuple( 0.123456 , 0.123456 , 0.123456 ) );
+    p.print( std::make_tuple( 0.123456 , 0.654321 , 0.123654 ) );
 
-    REQUIRE( ss.str() == "0.1234560.1234560.123456\n" );
+    REQUIRE( ss.str() == "0.1234560.6543210.123654\n" );
 }
 
 TEST_CASE( "Take default_precision option into account while printing" , "[print]" )
