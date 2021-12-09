@@ -2,6 +2,8 @@
   <img src="gif/showcase-1.gif"/> 
 </p>
 
+[![CMake](https://github.com/OzanCansel/tableprinter/actions/workflows/cmake.yml/badge.svg)](https://github.com/OzanCansel/tableprinter/actions/workflows/cmake.yml)
+
 # tableprinter
 Allows a programmer to print table-like outputs over `std::ostream`.
 
