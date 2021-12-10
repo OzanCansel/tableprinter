@@ -5,6 +5,7 @@
 #include <tableprinter/tableprinter.hpp>
 #include <random>
 #include <algorithm>
+#include <array>
 
 TEST_CASE( "Single float benchmark" , "[printer]" )
 {

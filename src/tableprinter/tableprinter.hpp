@@ -7,6 +7,7 @@
 #include <iomanip>
 #include <ostream>
 #include <tuple>
+#include <sstream>
 
 namespace tableprinter
 {

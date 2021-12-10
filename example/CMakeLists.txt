@@ -1,5 +1,7 @@
-add_executable( print-instructions-benchmark print-instructions-benchmark.cpp )
-add_executable( print-scores print-scores.cpp )
+if ( NOT MSVC )
+	add_executable( print-instructions-benchmark print-instructions-benchmark.cpp )
+	target_link_libraries( print-instructions-benchmark tableprinter::tableprinter )
+endif()
 
-target_link_libraries( print-instructions-benchmark tableprinter::tableprinter )
+add_executable( print-scores print-scores.cpp )
 target_link_libraries( print-scores tableprinter::tableprinter )
