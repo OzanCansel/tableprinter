@@ -1,8 +1,17 @@
 <p align="center">
-  <img src="gif/showcase-1.gif"/> 
+  <img src="gif/showcase-1.gif"/>
+  <a href="https://github.com/OzanCansel/tableprinter/actions/workflows/cmake-linux.yml">
+    <img src="https://github.com/OzanCansel/tableprinter/actions/workflows/cmake-linux.yml/badge.svg" alt="codacy"/>
+  </a>
+  
+  <a href="https://github.com/OzanCansel/tableprinter/actions/workflows/cmake-windows.yml">
+    <img src="https://github.com/OzanCansel/tableprinter/actions/workflows/cmake-windows.yml/badge.svg" alt="codacy"/>
+  </a>
+  
+  <a href="https://github.com/OzanCansel/tableprinter/actions/workflows/cmake-macos.yml">
+    <img src="https://github.com/OzanCansel/tableprinter/actions/workflows/cmake-macos.yml/badge.svg" alt="codacy"/>
+  </a>
 </p>
-
-[![CMake](https://github.com/OzanCansel/tableprinter/actions/workflows/cmake.yml/badge.svg)](https://github.com/OzanCansel/tableprinter/actions/workflows/cmake.yml)
 
 # tableprinter
 Allows a programmer to print table-like outputs over `std::ostream`.
