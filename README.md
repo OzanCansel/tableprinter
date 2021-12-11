@@ -16,15 +16,15 @@
 # tableprinter
 Allows a programmer to print table-like outputs over `std::ostream`.
 
-It is a header only library.
+- It is a header only library.
 
-No other dependency than STL.
+- No other dependency than STL.
 
-Provides required files for cmake to be used with `find_package( tableprinter )`
+- Provides required files for cmake to be used with `find_package( tableprinter )`
 
-C++17 compliant compiler is needed to make it worked.
+- C++17 compliant compiler is needed to make it worked.
 
-Tested only on Linux.
+- Tested only on Linux.
 
 ## Example
 
