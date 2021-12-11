@@ -16,6 +16,13 @@ I just modified the printing part.
 #include <list>
 #include <vector>
 #include <deque>
+#include <random>
+
+#if defined(__clang__) || defined(__GNUC__) || defined(__GNUG__)
+  #define NOINLINE __attribute__((noinline))
+#elif defined(_MSC_VER)
+  #define NOINLINE __declspec(noinline)
+#endif
 
 #define TotallyOrdered typename
 #define Sequence typename
@@ -75,8 +82,12 @@ using std::iota;
 
 template <RandomAccessIterator I>
 void random_iota(I first, I last) {
-  iota(first, last, 0);
-  std::random_shuffle(first, last);
+  std::iota(first, last, 0);
+
+  std::random_device rd;
+  std::mt19937 g(rd());
+
+  std::shuffle(first, last , g);
 }
 
 template <typename N>
@@ -103,7 +114,7 @@ struct divides
 template <typename N>
 struct fplus
 {
-  N operator() (const N& x, const N& y) __attribute__((noinline));
+  NOINLINE N operator() (const N& x, const N& y);
 };
 
 template <typename N>
@@ -189,7 +200,6 @@ void print_info(size_t n, size_t m) {
   std::cout << "Applying operation " 
 	    << n * m << " times" 
 	    << " (sequence length " << n << " by " << m << " iterations)"
-	    << " at: " << asctime(localtime(&now))
 	    << std::endl;
 }
 
@@ -201,7 +211,10 @@ struct test_instructions
     std::vector<T> data(n);
     random_iota(data.begin(), data.end());
     Seq<T> v1(data.begin(), data.end());
-    std::random_shuffle(data.begin(), data.end());
+    std::random_device rd;
+    std::mt19937 g(rd());
+
+    std::shuffle(data.begin(), data.end(), g);
     Seq<T> v2(data.begin(), data.end());
     Seq<T> v3(n);
     
