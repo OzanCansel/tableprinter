@@ -1,12 +1,12 @@
 #include <iostream>
-#include <sstream>
+#include <fstream>
 #include <tableprinter/tableprinter.hpp>
 
 int main()
 {
     using namespace tableprinter;
 
-    std::stringstream ss;
+    std::ofstream scores_f { "scores.txt" };
 
     printer p
     {
@@ -17,7 +17,7 @@ int main()
             { name { "rank" }    , width { 6 }  } ,
             { name { "score" }   , width { 7 } , fixed { } , precision { 2 } }
         } ,
-        { std::cout , ss }
+        { std::cout , scores_f }
     };
 
     p.sanity_check()
