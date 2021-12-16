@@ -26,6 +26,11 @@ Allows a programmer to print table-like outputs over `std::ostream`.
 
 - Tested only on Linux.
 
+## Why ?
+- Very convenient to read table-like formatted input from a file. An [example](https://github.com/OzanCansel/tableprinter/blob/master/example/read-scores.cpp).
+- Outputs look pretty (c)lean so easier to cognize.
+- Able to be parsed by linux tools such as [awk](https://www.gnu.org/software/gawk/) or similars. An [example](https://github.com/OzanCansel/tableprinter/blob/master/example/print-scores.cpp#L33-L38).
+
 ## Example
 
 ``` C++
