@@ -298,7 +298,7 @@ tableprinter::printer& tableprinter::printer::print( const Ts&... params )
     {
         print_column<0 , Ts...>( stream , params... );
 
-        stream << "\n";
+        stream << '\n';
     }
 
     return *this;
