@@ -3,6 +3,92 @@
 #include <sstream>
 #include <tableprinter/tableprinter.hpp>
 
+TEST_CASE( "Retrieve streams" , "[streams]" )
+{
+    using namespace tableprinter;
+
+    std::stringstream ss1 , ss2 , ss3;
+
+    printer p
+    {
+        {
+            { name { "col-1" } , default_precision {} } ,
+            { name { "col-2" } , default_precision {} } ,
+            { name { "col-3" } , default_precision {} }
+        } ,
+        { ss1 , ss2 , ss3 }
+    };
+
+    REQUIRE( std::size( p.streams() ) == 3 );
+}
+
+TEST_CASE( "Remove streams" , "[remove_streams]" )
+{
+    using namespace tableprinter;
+
+    std::stringstream ss1 , ss2 , ss3;
+
+    printer p
+    {
+        {
+            { name { "col-1" } , default_precision {} } ,
+            { name { "col-2" } , default_precision {} } ,
+            { name { "col-3" } , default_precision {} }
+        } ,
+        { ss1 , ss2 , ss3 }
+    };
+
+    p.remove_streams( ss1 , ss2 , ss3 );
+
+    p.print( 1 , 2 , 3  );
+
+    REQUIRE( std::empty( ss1.str() ) );
+    REQUIRE( std::empty( ss2.str() ) );
+}
+
+TEST_CASE( "Add streams" , "[add_streams]" )
+{
+    using namespace tableprinter;
+
+    printer p
+    {
+        {
+            { name { "col-1" } , default_precision {} } ,
+            { name { "col-2" } , default_precision {} } ,
+            { name { "col-3" } , default_precision {} }
+        }
+    };
+
+    std::stringstream ss;
+
+    p.print( 1 , 2 , 3 );
+    p.add_streams( ss );
+    p.print( 4 , 5 , 6 );
+
+    REQUIRE( ss.str() == "456\n" );
+
+    p.add_streams( ss , ss );
+    p.print( 7 , 8 , 9 );
+
+    REQUIRE( ss.str() == "456\n789\n789\n789\n" );
+}
+
+TEST_CASE( "Should be constructed without outputs" )
+{
+    using namespace tableprinter;
+
+    printer p
+    {
+        {
+            { name { "col-1" } , default_precision {} } ,
+            { name { "col-2" } , default_precision {} } ,
+            { name { "col-3" } , default_precision {} }
+        }
+    };
+
+    p.print( 1 , 2 , 3 );
+}
+
 TEST_CASE( "Print tuple elements" , "[print]" )
 {
     using namespace tableprinter;

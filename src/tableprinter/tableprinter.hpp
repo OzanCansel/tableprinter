@@ -228,24 +228,18 @@ public:
 
     using osref = ::std::reference_wrapper<::std::ostream>;
 
-    printer(
+    inline printer(
         ::std::vector<column> columns ,
-        ::std::vector<osref>  streams
-    )
-        :   m_columns { ::std::move( columns ) }
-        ,   m_streams { ::std::move( streams ) }
-    {   }
+        ::std::vector<osref>  streams = ::std::vector<osref> {}
+    );
 
-    printer(
-        ::std::vector<column> columns ,
-        ::std::ostream& stream
-    )
-        :   printer
-            {
-                ::std::move( columns ) , ::std::vector<osref>{ stream }
-            }
-    {   }
+    inline printer( ::std::vector<column> columns , ::std::ostream& stream );
 
+    template<typename... Ts>
+    inline printer& add_streams( ::std::ostream& os , Ts&... streams );
+
+    template<typename... Ts>
+    inline printer& remove_streams( ::std::ostream& os , Ts&... streams );
 
     template<typename... Ts>
     inline printer& print( const ::std::tuple<Ts...>& values );
@@ -274,10 +268,60 @@ private:
     inline void throw_if_both_precision_and_default_precision_opt( const column& ) const;
     inline void throw_if_both_fixed_and_unfixed_opt( const column& ) const;
 
-    ::std::vector<::std::reference_wrapper<::std::ostream>> m_streams;
+    ::std::vector<osref> m_streams;
     ::std::vector<column> m_columns;
 };
 
+}
+
+tableprinter::printer::printer( ::std::vector<column> columns , ::std::vector<osref> streams )
+    :   m_columns { ::std::move( columns ) }
+    ,   m_streams { ::std::move( streams ) }
+{   }
+
+tableprinter::printer::printer( ::std::vector<column> columns , ::std::ostream& stream )
+    :   printer
+        {
+            ::std::move( columns ) ,
+            ::std::vector<osref>{ stream }
+        }
+{   }
+
+template<typename... Ts>
+tableprinter::printer& tableprinter::printer::add_streams( std::ostream& os , Ts&... streams )
+{
+    static_assert(
+        (::std::is_base_of_v<::std::ostream , Ts> && ...) ,
+        "Ts should be inherited from 'std::ostream'"
+    );
+
+    m_streams.push_back( os );
+    ( m_streams.push_back( streams ) , ... );
+
+    return *this;
+}
+
+template<typename... Ts>
+tableprinter::printer& tableprinter::printer::remove_streams( ::std::ostream& os , Ts&... streams )
+{
+    static_assert(
+        (::std::is_base_of_v<::std::ostream , Ts> && ...) ,
+        "Ts should be inherited from 'std::ostream'"
+    );
+
+    m_streams.erase(
+        ::std::remove_if(
+            ::std::begin( m_streams ) ,
+            ::std::end( m_streams ) ,
+            [ &os , &streams... ]( const osref& stream ){
+                return &os == &stream.get() ||
+                       ( ( &streams == &stream.get() ) || ... );
+            }
+        ) ,
+        ::std::end( m_streams )
+    );
+
+    return *this;
 }
 
 template<typename... Ts>
@@ -405,6 +449,12 @@ tableprinter::printer& tableprinter::printer::flush()
         os.flush();
 
     return *this;
+}
+
+const ::std::vector<tableprinter::printer::osref>&
+tableprinter::printer::streams() const noexcept
+{
+    return m_streams;
 }
 
 template<::std::size_t Idx , typename H , typename... T>
