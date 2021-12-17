@@ -257,6 +257,7 @@ public:
     inline const printer& sanity_check() const;
     inline printer& sanity_check();
     inline printer& flush();
+    inline const ::std::vector<osref>& streams() const noexcept;
 
 private:
 
