@@ -318,7 +318,7 @@ tableprinter::printer& tableprinter::printer::remove_streams( ::std::ostream& os
             ::std::end( m_streams ) ,
             [ &os , &streams... ]( const osref& stream ){
                 return &os == &stream.get() ||
-                       ( ( &streams == &stream.get() ) || ... );
+                       ( ( ::std::addressof( streams ) == &stream.get() ) || ... );
             }
         ) ,
         ::std::end( m_streams )
