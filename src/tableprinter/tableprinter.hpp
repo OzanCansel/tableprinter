@@ -192,7 +192,7 @@ inline ::std::string concat( const ::std::vector<option>& options )
         ::std::visit(
             [ &ss ]( const auto& opt )
             {
-                if constexpr ( has_value_field_v<decltype(opt)> )
+                if constexpr ( has_value_field_v<decltype( opt )> )
                 {
                     ss << '\'' << opt.value << "' ";
                 }
