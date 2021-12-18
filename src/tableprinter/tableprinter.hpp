@@ -208,6 +208,36 @@ inline ::std::string concat( const ::std::vector<option>& options )
 
 }
 
+struct printer_exception : ::std::logic_error
+{
+    using ::std::logic_error::logic_error;
+};
+
+struct arguments_size_doesnt_match_with_columns : printer_exception
+{
+    using printer_exception::printer_exception;
+};
+
+struct duplicate_option : printer_exception
+{
+    using printer_exception::printer_exception;
+};
+
+struct both_left_and_right_option : printer_exception
+{
+    using printer_exception::printer_exception;
+};
+
+struct both_precision_and_default_precision : printer_exception
+{
+    using printer_exception::printer_exception;
+};
+
+struct both_fixed_and_unfixed : printer_exception
+{
+    using printer_exception::printer_exception;
+};
+
 struct column
 {
     column( ::std::initializer_list<option> opts )
@@ -333,7 +363,7 @@ tableprinter::printer& tableprinter::printer::print( const Ts&... params )
     static_assert( sizeof...( Ts ) , "There must be arguments to print." );
 
     if ( auto count = sizeof...( params ) != ::std::size( m_columns ) )
-        throw ::std::invalid_argument {
+        throw arguments_size_doesnt_match_with_columns {
             "There are " +
             ::std::to_string( ::std::size( m_columns ) ) +
             " columns but given " +
@@ -355,7 +385,7 @@ template<typename... Ts>
 tableprinter::printer& tableprinter::printer::print( const ::std::tuple<Ts...>& values )
 {
     if ( auto count = sizeof...( Ts ) != ::std::size( m_columns ) )
-        throw ::std::invalid_argument {
+        throw arguments_size_doesnt_match_with_columns {
             "There are " +
             ::std::to_string( ::std::size( m_columns ) ) +
             " columns but given " +
@@ -524,7 +554,7 @@ void tableprinter::printer::throw_if_duplicate_opt( const column& col , ::std::s
     {
         ::std::string concatenated;
 
-        throw ::std::logic_error {
+        throw duplicate_option {
             ::std::string { error } +
             " " +
             detail::concat( opts )
@@ -539,7 +569,7 @@ void tableprinter::printer::throw_if_both_left_and_right_opt( const column& col 
 
     if ( !::std::empty( lefts ) && !::std::empty( rights ) )
     {
-        throw ::std::logic_error {
+        throw both_left_and_right_option {
             "Specifying both 'left' and 'right' options are not sane."
         };
     }
@@ -552,7 +582,7 @@ void tableprinter::printer::throw_if_both_precision_and_default_precision_opt( c
 
     if ( !::std::empty( precisions ) && !::std::empty( default_precs ) )
     {
-        throw std::logic_error {
+        throw both_precision_and_default_precision {
             "Specifying both 'precision' and 'default_precision' options are not sane."
         };
     }
@@ -565,7 +595,7 @@ void tableprinter::printer::throw_if_both_fixed_and_unfixed_opt( const column& c
 
     if ( !::std::empty( fixeds ) && !::std::empty( unfixeds ) )
     {
-        throw ::std::logic_error {
+        throw both_fixed_and_unfixed {
             "Specifying both 'fixed' and 'unfixed' options are not sane."
         };
     }

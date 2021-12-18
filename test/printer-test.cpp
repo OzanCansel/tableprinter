@@ -414,7 +414,7 @@ TEST_CASE( "If there are two 'name' options, should throw exception" , "[sanity_
         ss
     };
 
-    REQUIRE_THROWS_AS( p.sanity_check() , std::logic_error );
+    REQUIRE_THROWS_AS( p.sanity_check() , tableprinter::duplicate_option );
 }
 
 TEST_CASE( "If there are two 'width' options, should throw exception" , "[sanity_check]" )
@@ -431,7 +431,7 @@ TEST_CASE( "If there are two 'width' options, should throw exception" , "[sanity
         ss
     };
 
-    REQUIRE_THROWS_AS( p.sanity_check() , std::logic_error );
+    REQUIRE_THROWS_AS( p.sanity_check() , tableprinter::duplicate_option );
 }
 
 TEST_CASE( "If there are two 'precision' options, should throw exception" , "[sanity_check]" )
@@ -448,7 +448,7 @@ TEST_CASE( "If there are two 'precision' options, should throw exception" , "[sa
         ss
     };
 
-    REQUIRE_THROWS_AS( p.sanity_check() , std::logic_error );
+    REQUIRE_THROWS_AS( p.sanity_check() , tableprinter::duplicate_option );
 }
 
 TEST_CASE( "If there are two 'fill' options, should throw exception" , "[sanity_check]" )
@@ -465,7 +465,7 @@ TEST_CASE( "If there are two 'fill' options, should throw exception" , "[sanity_
         ss
     };
 
-    REQUIRE_THROWS_AS( p.sanity_check() , std::logic_error );
+    REQUIRE_THROWS_AS( p.sanity_check() , tableprinter::duplicate_option );
 }
 
 TEST_CASE( "If both 'left' and 'right' options are specified, should throw exception" , "[sanity_check]" )
@@ -482,7 +482,7 @@ TEST_CASE( "If both 'left' and 'right' options are specified, should throw excep
         ss
     };
 
-    REQUIRE_THROWS_AS( p.sanity_check() , std::logic_error );
+    REQUIRE_THROWS_AS( p.sanity_check() , tableprinter::both_left_and_right_option );
 }
 
 TEST_CASE( "If both 'fixed' and 'unfixed' options are specified, should throw exception" , "[sanity_check]" )
@@ -499,7 +499,7 @@ TEST_CASE( "If both 'fixed' and 'unfixed' options are specified, should throw ex
         ss
     };
 
-    REQUIRE_THROWS_AS( p.sanity_check() , std::logic_error );
+    REQUIRE_THROWS_AS( p.sanity_check() , tableprinter::both_fixed_and_unfixed );
 }
 
 TEST_CASE( "If both 'precision' and 'default_precision' options are specified, should throw exception" , "[sanity_check]" )
@@ -516,5 +516,5 @@ TEST_CASE( "If both 'precision' and 'default_precision' options are specified, s
         ss
     };
 
-    REQUIRE_THROWS_AS( p.sanity_check() , std::logic_error );
+    REQUIRE_THROWS_AS( p.sanity_check() , tableprinter::both_precision_and_default_precision );
 }
