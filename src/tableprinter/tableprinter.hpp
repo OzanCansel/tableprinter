@@ -228,12 +228,15 @@ public:
 
     using osref = ::std::reference_wrapper<::std::ostream>;
 
-    inline printer(
+    inline explicit printer(
         ::std::vector<column> columns ,
         ::std::vector<osref>  streams = ::std::vector<osref> {}
     );
 
-    inline printer( ::std::vector<column> columns , ::std::ostream& stream );
+    inline explicit printer(
+        ::std::vector<column> columns ,
+        ::std::ostream& stream
+    );
 
     template<typename... Ts>
     inline printer& add_streams( ::std::ostream& os , Ts&... streams );
