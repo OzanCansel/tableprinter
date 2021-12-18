@@ -380,7 +380,7 @@ tableprinter::printer& tableprinter::printer::print_headers()
 {
     for ( ::std::ostream& stream : m_streams )
     {
-        for ( const auto& column : m_columns )
+        for ( const auto& col : m_columns )
         {
             detail::run(
                 detail::overloaded {
@@ -397,7 +397,7 @@ tableprinter::printer& tableprinter::printer::print_headers()
                         stream << ::std::right;
                     }
                 } ,
-                column.options
+                col.options
             );
 
             bool printed {};
@@ -408,7 +408,7 @@ tableprinter::printer& tableprinter::printer::print_headers()
                     printed = true;
                     stream << n.value;
                 } ,
-                column.options
+                col.options
             );
 
             if ( !printed )
