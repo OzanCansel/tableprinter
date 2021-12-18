@@ -294,7 +294,7 @@ template<typename... Ts>
 tableprinter::printer& tableprinter::printer::add_streams( std::ostream& os , Ts&... streams )
 {
     static_assert(
-        (::std::is_base_of_v<::std::ostream , Ts> && ...) ,
+        (::std::is_convertible_v<Ts& , ::std::ostream&> && ...) ,
         "Ts should be inherited from 'std::ostream'"
     );
 
@@ -308,7 +308,7 @@ template<typename... Ts>
 tableprinter::printer& tableprinter::printer::remove_streams( ::std::ostream& os , Ts&... streams )
 {
     static_assert(
-        (::std::is_base_of_v<::std::ostream , Ts> && ...) ,
+        (::std::is_convertible_v<Ts& , ::std::ostream&> && ...) ,
         "Ts should be inherited from 'std::ostream'"
     );
 
