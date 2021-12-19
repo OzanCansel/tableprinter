@@ -134,7 +134,7 @@ template<typename T>
 static constexpr bool has_value_field_v = has_value_field<T>::value;
 
 template<typename F>
-inline void run( F&& val , const option& opt )
+inline void run( F val , const option& opt )
 {
     static_assert(
         detail::invocable_with_option_v<F> ,
@@ -144,17 +144,17 @@ inline void run( F&& val , const option& opt )
     ::std::visit(
         detail::overloaded {
             []( auto&& ) {} ,
-            ::std::forward<F>( val )
+            val
         } ,
         opt
     );
 }
 
 template<typename F>
-inline void run( F&& val , const ::std::vector<option>& options )
+inline void run( F val , const ::std::vector<option>& options )
 {
     for ( const option& opt : options )
-        run( ::std::forward<F>( val ) , opt );
+        run( val , opt );
 }
 
 template<typename Opt>
