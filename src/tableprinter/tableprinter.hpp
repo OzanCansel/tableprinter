@@ -242,7 +242,7 @@ struct column
 {
     column( ::std::initializer_list<option> opts )
     {
-        ::std::move(
+        ::std::copy(
             ::std::begin ( opts ) ,
             ::std::end( opts ) ,
             ::std::back_inserter( options )
