@@ -67,6 +67,15 @@ struct left
 struct right
 {};
 
+struct hex
+{};
+
+struct decimal
+{};
+
+struct octal
+{};
+
 using option = ::std::variant<name ,
                               width ,
                               precision ,
@@ -75,7 +84,10 @@ using option = ::std::variant<name ,
                               fixed ,
                               unfixed ,
                               left ,
-                              right>;
+                              right ,
+                              hex ,
+                              decimal ,
+                              octal>;
 
 namespace detail
 {
@@ -98,7 +110,10 @@ struct is_option :
                             ::std::is_same_v<T , fixed>             ||
                             ::std::is_same_v<T , unfixed>           ||
                             ::std::is_same_v<T , left>              ||
-                            ::std::is_same_v<T , right>>
+                            ::std::is_same_v<T , right>             ||
+                            ::std::is_same_v<T , hex>               ||
+                            ::std::is_same_v<T , decimal>           ||
+                            ::std::is_same_v<T , octal>>
 {};
 
 template<typename T>
@@ -114,7 +129,10 @@ struct invocable_with_option :
                             ::std::is_invocable_v<F , fixed>             ||
                             ::std::is_invocable_v<F , unfixed>           ||
                             ::std::is_invocable_v<F , left>              ||
-                            ::std::is_invocable_v<F , right>>
+                            ::std::is_invocable_v<F , right>             ||
+                            ::std::is_invocable_v<F , hex>               ||
+                            ::std::is_invocable_v<F , decimal>           ||
+                            ::std::is_invocable_v<F , octal>>
 {};
 
 template<typename F>
@@ -528,6 +546,18 @@ void tableprinter::printer::print_column( ::std::ostream& os , const H& val , co
             [ &os ]( const right& )
             {
                 os << ::std::right;
+            } ,
+            [ &os ]( const hex& )
+            {
+                os << ::std::hex;
+            } ,
+            [ &os ]( const decimal& )
+            {
+                os << ::std::dec;
+            } ,
+            [ &os ]( const octal& )
+            {
+                os << ::std::oct;
             }
         } ,
         options

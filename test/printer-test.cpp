@@ -3,6 +3,64 @@
 #include <sstream>
 #include <tableprinter/tableprinter.hpp>
 
+TEST_CASE( "Hex" , "[printer]" )
+{
+    using namespace tableprinter;
+
+    std::stringstream ss;
+
+    printer p
+    {
+        {
+            { hex {} }
+        } ,
+        ss
+    };
+
+    p.print( 15 );
+    REQUIRE( ss.str() == "f\n" );
+}
+
+TEST_CASE( "Decimal" , "[printer]" )
+{
+    using namespace tableprinter;
+
+    std::stringstream ss;
+
+    std::cout << std::hex;
+
+    printer p
+    {
+        {
+            { decimal {} }
+        } ,
+        ss
+    };
+
+    p.print( 15 );
+    REQUIRE( ss.str() == "15\n" );
+}
+
+TEST_CASE( "Octal" , "[printer]" )
+{
+    using namespace tableprinter;
+
+    std::stringstream ss;
+
+    std::cout << std::hex;
+
+    printer p
+    {
+        {
+            { octal {} }
+        } ,
+        ss
+    };
+
+    p.print( 15 );
+    REQUIRE( ss.str() == "17\n" );
+}
+
 TEST_CASE( "Retrieve streams" , "[streams]" )
 {
     using namespace tableprinter;
