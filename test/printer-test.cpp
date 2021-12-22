@@ -320,7 +320,7 @@ TEST_CASE( "If there are less elements in tuple than columns, should throw excep
         ss
     };
 
-    REQUIRE_THROWS_AS( p.print( std::make_tuple( 1 ) ) , std::logic_error );
+    REQUIRE_THROWS_AS( p.print( std::make_tuple( 1 ) ) , arguments_size_doesnt_match_with_columns );
 }
 
 TEST_CASE( "If there are less arguments than columns, should throw exception" , "[print]" )
