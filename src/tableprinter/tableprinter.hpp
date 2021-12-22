@@ -151,6 +151,64 @@ struct has_value_field<T, ::std::void_t<decltype( ::std::declval<T>().value )>> 
 template<typename T>
 static constexpr bool has_value_field_v = has_value_field<T>::value;
 
+template<typename T , typename = ::std::void_t<>>
+struct is_input_iter : ::std::false_type
+{};
+
+template <typename T>
+struct is_input_iter< T , ::std::void_t
+                          <
+                            decltype
+                            (
+                                ++::std::declval<T&>() ,
+                                *::std::declval<T&>() ,
+                                ::std::declval<T&>() == std::declval<T&>()
+                            )
+                           >
+                    > : ::std::true_type
+{ };
+
+template<typename T>
+static constexpr bool is_input_iter_v = is_input_iter<T>::value;
+
+template<typename Iter>
+struct sequence
+{
+    Iter beg;
+    Iter end;
+};
+
+template<typename T>
+struct is_sequence : ::std::false_type
+{};
+
+template<typename Iter>
+struct is_sequence<sequence<Iter>> : ::std::true_type
+{};
+
+template<typename T>
+static constexpr bool is_sequence_v = is_sequence<T>::value;
+
+template<typename T , typename = ::std::void_t<>>
+struct is_container : ::std::false_type
+{};
+
+template<typename T>
+struct is_container< T ,
+                     ::std::void_t
+                     <
+                        decltype
+                        (
+                            ::std::begin( ::std::declval<T>() ) ,
+                            ::std::end( ::std::declval<T>() )
+                        )
+                     >
+                   > : ::std::true_type
+{};
+
+template<typename T>
+static constexpr bool is_container_v = is_container<T>::value;
+
 template<typename F>
 inline void run( F val , const option& opt )
 {
@@ -256,6 +314,33 @@ struct both_fixed_and_unfixed : printer_exception
     using printer_exception::printer_exception;
 };
 
+template<typename Iter>
+inline auto sequence( Iter beg , Iter end )
+{
+    static_assert(
+        detail::is_input_iter_v<Iter> ,
+        "'Iter' should support ++,*,!="
+    );
+
+    return detail::sequence<Iter> { beg , end };
+}
+
+template<typename Container>
+inline auto sequence( Container&& c )
+{
+    static_assert(
+        detail::is_container_v<Container> ,
+        "'Container' should have 'begin()' and 'end()'"
+    );
+
+    using Iterator = decltype( ::std::begin( c ) );
+
+    return detail::sequence<Iterator> {
+        ::std::begin( c ) ,
+        ::std::end( c )
+    };
+}
+
 struct column
 {
     column( ::std::initializer_list<option> opts )
@@ -306,8 +391,8 @@ public:
 
 private:
 
-    template<::std::size_t Idx , typename H , typename... T>
-    inline void print_column( ::std::ostream& , const H& , const T&... );
+    template<typename H , typename... T>
+    inline void print_column( int col , ::std::ostream& , const H& , const T&... );
 
     template<typename... Ts , ::std::size_t... Idx>
     inline void print_tuple( const ::std::tuple<Ts...>& , ::std::index_sequence<Idx...> );
@@ -380,18 +465,9 @@ tableprinter::printer& tableprinter::printer::print( const Ts&... params )
 {
     static_assert( sizeof...( Ts ) , "There must be arguments to print." );
 
-    if ( auto count = sizeof...( params ) != ::std::size( m_columns ) )
-        throw arguments_size_doesnt_match_with_columns {
-            "There are " +
-            ::std::to_string( ::std::size( m_columns ) ) +
-            " columns but given " +
-            ::std::to_string( count ) +
-            " arguments."
-        };
-
     for ( ::std::ostream& stream : m_streams )
     {
-        print_column<0 , Ts...>( stream , params... );
+        print_column<Ts...>( 0 , stream , params... );
 
         stream << '\n';
     }
@@ -508,65 +584,73 @@ tableprinter::printer::streams() const noexcept
     return m_streams;
 }
 
-template<::std::size_t Idx , typename H , typename... T>
-void tableprinter::printer::print_column( ::std::ostream& os , const H& val , const T&... rest )
+template<typename H , typename... T>
+void tableprinter::printer::print_column( int col , ::std::ostream& os , const H& val , const T&... rest )
 {
-    const auto& options { m_columns[ Idx ].options };
+    if constexpr ( detail::is_sequence_v<H> )
+    {
+        for ( auto itr = val.beg; !( itr == val.end ); ++itr , ++col )
+            print_column( col , os , *itr );
+    }
+    else
+    {
+        const auto& options { m_columns[ col++ ].options };
 
-    detail::run(
-        detail::overloaded {
-            [ &os ]( const width& w )
-            {
-                os << ::std::setw( w );
+        detail::run(
+            detail::overloaded {
+                [ &os ]( const width& w )
+                {
+                    os << ::std::setw( w );
+                } ,
+                [ &os ]( const fill& f )
+                {
+                    os << ::std::setfill( f.value );
+                } ,
+                [ &os ]( const precision& p )
+                {
+                    os << ::std::setprecision( p );
+                } ,
+                [ &os ]( const default_precision& )
+                {
+                    os << ::std::setprecision( 6 );
+                } ,
+                [ &os ]( const fixed& f )
+                {
+                    os << ::std::fixed;
+                } ,
+                [ &os ]( const unfixed& )
+                {
+                    os.unsetf( ::std::ios_base::fixed );
+                } ,
+                [ &os ]( const left& )
+                {
+                    os << ::std::left;
+                } ,
+                [ &os ]( const right& )
+                {
+                    os << ::std::right;
+                } ,
+                [ &os ]( const hex& )
+                {
+                    os << ::std::hex;
+                } ,
+                [ &os ]( const decimal& )
+                {
+                    os << ::std::dec;
+                } ,
+                [ &os ]( const octal& )
+                {
+                    os << ::std::oct;
+                }
             } ,
-            [ &os ]( const fill& f )
-            {
-                os << ::std::setfill( f.value );
-            } ,
-            [ &os ]( const precision& p )
-            {
-                os << ::std::setprecision( p );
-            } ,
-            [ &os ]( const default_precision& )
-            {
-                os << ::std::setprecision( 6 );
-            } ,
-            [ &os ]( const fixed& f )
-            {
-                os << ::std::fixed;
-            } ,
-            [ &os ]( const unfixed& )
-            {
-                os.unsetf( ::std::ios_base::fixed );
-            } ,
-            [ &os ]( const left& )
-            {
-                os << ::std::left;
-            } ,
-            [ &os ]( const right& )
-            {
-                os << ::std::right;
-            } ,
-            [ &os ]( const hex& )
-            {
-                os << ::std::hex;
-            } ,
-            [ &os ]( const decimal& )
-            {
-                os << ::std::dec;
-            } ,
-            [ &os ]( const octal& )
-            {
-                os << ::std::oct;
-            }
-        } ,
-        options
-    );
+            options
+        );
 
-    os << val;
+        os << val;
+    }
 
-    if constexpr( sizeof...( T ) != 0 )
-        print_column<Idx + 1 , T...>( os , rest... );
+    if constexpr ( bool( sizeof...( rest ) ) )
+    print_column( col , os , rest... );
 }
 
 template<typename... Ts , ::std::size_t... Idx>

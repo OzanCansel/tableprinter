@@ -3,6 +3,52 @@
 #include <sstream>
 #include <tableprinter/tableprinter.hpp>
 
+TEST_CASE( "sequence if there are arguments after it" , "[printer]" )
+{
+    using namespace tableprinter;
+
+    std::stringstream ss;
+
+    printer p
+    {
+        {
+            {} ,
+            {} ,
+            {} ,
+            {}
+        } ,
+        ss
+    };
+
+    int arr[] = { 0 , 1 };
+    p.print( 15 , sequence( arr ) , 2 );
+
+    REQUIRE( ss.str() == "15012\n" );
+}
+
+TEST_CASE( "sequence if there are no rest arguments" , "[printer]" )
+{
+        using namespace tableprinter;
+
+    std::stringstream ss;
+
+    printer p
+    {
+        {
+            {} ,
+            {} ,
+            {} ,
+            {}
+        } ,
+        ss
+    };
+
+    int arr[] = { 0 , 1 , 2 };
+    p.print( 15 , sequence( arr ) );
+
+    REQUIRE( ss.str() == "15012\n" );
+}
+
 TEST_CASE( "Hex" , "[printer]" )
 {
     using namespace tableprinter;
@@ -321,24 +367,6 @@ TEST_CASE( "If there are less elements in tuple than columns, should throw excep
     };
 
     REQUIRE_THROWS_AS( p.print( std::make_tuple( 1 ) ) , arguments_size_doesnt_match_with_columns );
-}
-
-TEST_CASE( "If there are less arguments than columns, should throw exception" , "[print]" )
-{
-    using namespace tableprinter;
-
-    std::stringstream ss;
-
-    printer p
-    {
-        {
-            { name { "col-1" } } ,
-            { name { "col-2" } }
-        } ,
-        ss
-    };
-
-    REQUIRE_THROWS_AS( p.print( 5 ) , std::logic_error );
 }
 
 TEST_CASE( "Print header names" , "[print_headers]" )
