@@ -650,7 +650,7 @@ void tableprinter::printer::print_column( int col , ::std::ostream& os , const H
     }
 
     if constexpr ( bool( sizeof...( rest ) ) )
-    print_column( col , os , rest... );
+        print_column( col , os , rest... );
 }
 
 template<typename... Ts , ::std::size_t... Idx>
