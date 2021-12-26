@@ -8,9 +8,9 @@ std::vector<std::string> shuffle( const std::vector<std::string>& colors )
 
     std::vector<std::string> shuffled { colors };
 
-    std::shuffle(
-        std::begin( shuffled ) ,
-        std::end( shuffled ) ,
+    shuffle(
+        begin( shuffled ) ,
+        end( shuffled ) ,
         rd
     );
 
@@ -34,25 +34,25 @@ int main()
         std::cout
     };
 
-    std::string color_array[] = {
+    std::string colors_array[] = {
         "red" , "green" , "blue" , "yellow" , "purple"
     };
 
     std::vector<std::string> colors  {
-        std::begin( color_array ) ,
-        std::end( color_array )
+        begin( colors_array ) ,
+        end( colors_array )
     };
 
     int idx {};
 
     p.sanity_check()
      .print_headers()
-     .print( ++idx , sequence( color_array ) )
+     .print( ++idx , sequence( colors_array ) )
      .print( ++idx , sequence( shuffle( colors = shuffle( colors ) ) ) )
      .print( ++idx , sequence( colors ) )
      .print( ++idx , sequence( shuffle( colors ) ) )
      .print( ++idx , sequence( shuffle( colors ) ) )
-     .print( ++idx , "-_-_-" , sequence( std::begin( colors ) , std::begin( colors ) + 2 ) )
+     .print( ++idx , "-_-_-" , sequence( begin( colors ) , begin( colors ) + 2 ) )
      .print( ++idx , sequence( shuffle( colors ) ) )
      .print( ++idx , sequence( shuffle( colors ) ) )
      .flush();

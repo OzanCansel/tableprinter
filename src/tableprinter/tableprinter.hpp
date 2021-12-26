@@ -167,7 +167,7 @@ struct is_input_iter< T , ::std::void_t
                             )
                            >
                     > : ::std::true_type
-{ };
+{};
 
 template<typename T>
 static constexpr bool is_input_iter_v = is_input_iter<T>::value;
@@ -218,7 +218,7 @@ inline void run( F val , const option& opt )
         "F must be invocable with an option."
     );
 
-    ::std::visit(
+    visit(
         detail::overloaded {
             []( auto&& ) {} ,
             val
@@ -243,7 +243,7 @@ inline ::std::vector<option> filter_opts( const ::std::vector<option>& options )
 
     for ( const option& opt : options )
     {
-        ::std::visit(
+        visit(
             detail::overloaded {
                 []( auto&& ) {} ,
                 [ &filtered ] ( const Opt& opt )
@@ -266,7 +266,7 @@ inline ::std::string concat( const ::std::vector<option>& options )
 
     for ( const option& opt : options )
     {
-        ::std::visit(
+        visit(
             [ &ss ]( const auto& opt )
             {
                 if constexpr ( has_value_field_v<decltype( opt )> )
@@ -346,10 +346,10 @@ struct column
 {
     column( ::std::initializer_list<option> opts )
     {
-        ::std::copy(
-            ::std::begin ( opts ) ,
-            ::std::end( opts ) ,
-            ::std::back_inserter( options )
+        copy(
+            begin ( opts ) ,
+            end( opts ) ,
+            back_inserter( options )
         );
     }
 
@@ -412,14 +412,14 @@ private:
 }
 
 tableprinter::printer::printer( ::std::vector<column> columns , ::std::vector<osref> streams )
-    :   m_columns { ::std::move( columns ) }
-    ,   m_streams { ::std::move( streams ) }
+    :   m_columns { move( columns ) }
+    ,   m_streams { move( streams ) }
 {   }
 
 tableprinter::printer::printer( ::std::vector<column> columns , ::std::ostream& stream )
     :   printer
         {
-            ::std::move( columns ) ,
+            move( columns ) ,
             ::std::vector<osref>{ stream }
         }
 {   }
@@ -447,15 +447,15 @@ tableprinter::printer& tableprinter::printer::remove_streams( ::std::ostream& os
     );
 
     m_streams.erase(
-        ::std::remove_if(
-            ::std::begin( m_streams ) ,
-            ::std::end( m_streams ) ,
+        remove_if(
+            begin( m_streams ) ,
+            end( m_streams ) ,
             [ &os , &streams... ]( const osref& stream ){
                 return &os == &stream.get() ||
-                       ( ( ::std::addressof( streams ) == &stream.get() ) || ... );
+                       ( ( addressof( streams ) == &stream.get() ) || ... );
             }
         ) ,
-        ::std::end( m_streams )
+        end( m_streams )
     );
 
     return *this;
@@ -479,10 +479,10 @@ tableprinter::printer& tableprinter::printer::print( const Ts&... params )
 template<typename... Ts>
 tableprinter::printer& tableprinter::printer::print( const ::std::tuple<Ts...>& values )
 {
-    if ( auto count = sizeof...( Ts ) != ::std::size( m_columns ) )
+    if ( auto count = sizeof...( Ts ) != size( m_columns ) )
         throw arguments_size_doesnt_match_with_columns {
             "There are " +
-            ::std::to_string( ::std::size( m_columns ) ) +
+            ::std::to_string( size( m_columns ) ) +
             " columns but given " +
             ::std::to_string( count ) +
             " arguments."
@@ -665,7 +665,7 @@ void tableprinter::printer::throw_if_duplicate_opt( const column& col , ::std::s
 {
     auto opts = detail::filter_opts<T>( col.options );
 
-    if (  ::std::size( opts ) > 1 )
+    if ( size( opts ) > 1 )
     {
         ::std::string concatenated;
 
@@ -682,7 +682,7 @@ void tableprinter::printer::throw_if_both_left_and_right_opt( const column& col 
     auto lefts  = detail::filter_opts<left>( col.options );
     auto rights = detail::filter_opts<right>( col.options );
 
-    if ( !::std::empty( lefts ) && !::std::empty( rights ) )
+    if ( !empty( lefts ) && !empty( rights ) )
     {
         throw both_left_and_right_option {
             "Specifying both 'left' and 'right' options are not sane."
@@ -695,7 +695,7 @@ void tableprinter::printer::throw_if_both_precision_and_default_precision_opt( c
     auto precisions    = detail::filter_opts<precision>( col.options );
     auto default_precs = detail::filter_opts<default_precision>( col.options );
 
-    if ( !::std::empty( precisions ) && !::std::empty( default_precs ) )
+    if ( !empty( precisions ) && !empty( default_precs ) )
     {
         throw both_precision_and_default_precision {
             "Specifying both 'precision' and 'default_precision' options are not sane."
@@ -708,7 +708,7 @@ void tableprinter::printer::throw_if_both_fixed_and_unfixed_opt( const column& c
     auto fixeds   = detail::filter_opts<fixed>( col.options );
     auto unfixeds = detail::filter_opts<unfixed>( col.options );
 
-    if ( !::std::empty( fixeds ) && !::std::empty( unfixeds ) )
+    if ( !empty( fixeds ) && !empty( unfixeds ) )
     {
         throw both_fixed_and_unfixed {
             "Specifying both 'fixed' and 'unfixed' options are not sane."
