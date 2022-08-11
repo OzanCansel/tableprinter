@@ -540,7 +540,7 @@ tableprinter::printer& tableprinter::printer::print_headers()
                 stream << "";
         }
 
-        stream << "\n";
+        stream << '\n';
     }
 
     return *this;
