@@ -68,9 +68,9 @@ void print_max_score( const std::vector<entry>& scores )
         return lhs.score < rhs.score;
     };
 
-    auto winner = std::max_element(
-        std::begin( scores ) ,
-        std::end( scores ) ,
+    auto winner = max_element(
+        begin( scores ) ,
+        end( scores ) ,
         by_score
     );
 
