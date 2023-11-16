@@ -695,6 +695,8 @@ void tableprinter::printer::throw_if_both_precision_and_default_precision_opt( c
     auto precisions    = detail::filter_opts<precision>( col.options );
     auto default_precs = detail::filter_opts<default_precision>( col.options );
 
+    int *x = new int[25];
+
     if ( !empty( precisions ) && !empty( default_precs ) )
     {
         throw both_precision_and_default_precision {
